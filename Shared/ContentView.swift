@@ -25,12 +25,13 @@ struct ContentView: View {
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        NavigationView {
             ZStack {
               Rectangle()
                    .fill(LinearGradient(gradient: Gradient(colors: [Color(red:0.69, green: 0.80, blue: 0.89), Color(red:0.37, green: 0.53, blue: 0.64), Color(red:0.11, green: 0.26, blue: 0.38), Color(red:0, green: 0.06, blue: 0.13)]), startPoint: .topLeading, endPoint: .bottomTrailing))
                     .ignoresSafeArea()
                 VStack(spacing: 25) {
+                    Stepper("", value: $timeRemaining, in: 5...50, step: 5.0)
+                        .frame(width: 100, height: 50)
                     ZStack {
                         Circle()
                             .stroke(Color.gray.opacity(0.2), style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
@@ -45,15 +46,8 @@ struct ContentView: View {
                             .shadow(color: Color.myGray.opacity(0.3), radius: 10, x: -5, y: -5)
                         Text("\(Int(timeRemaining))")
                             .foregroundColor(Color.offWhite)
-                            .fontWeight(.light)
-//                        Picker("", selection: $selectedColor) {
-//                            ForEach(colors, id: \.self) {
-//                                Text($0)
-//                                .foregroundColor(Color.offWhite)
-//                                }
-//                        }
-//                        Text("\(Int(timeRemaining))").font(.largeTitle)
-//                            .foregroundColor(Color.offWhite)
+                            .fontWeight(.thin)
+                            .font(.system(size: 40))
                     }
                     .frame(width: radius * 2, height: radius * 2)
                     
@@ -61,14 +55,14 @@ struct ContentView: View {
                         Label("", systemImage: "\(isActive ? "pause.fill" : "play.fill")")
                             .foregroundColor(isActive ? .yellow : Color(red: 61/255, green: 184/255, blue: 184/255)).font(.title).onTapGesture {
                                 isActive.toggle()
-                            }
-                            .shadow(color: Color.offBlack.opacity(0.3), radius: 10, x: 10, y: 10)
+                        }
+                        .shadow(color: Color.offBlack.opacity(0.3), radius: 10, x: 10, y: 10)
                         Label("", systemImage: "backward.fill")
                             .foregroundColor(Color(red: 255/255, green: 255/255, blue: 235/235)).font(.title).onTapGesture {
                                 isActive = false
                                 timeRemaining = defaultTimeRemaining
-                            }
-                            .shadow(color: Color.offBlack.opacity(0.3), radius: 10, x: 10, y: 10)
+                        }
+                        .shadow(color: Color.offBlack.opacity(0.3), radius: 10, x: 10, y: 10)
                     }
                 }
                 .onReceive(timer, perform: { _ in
@@ -80,44 +74,8 @@ struct ContentView: View {
                         timeRemaining = defaultTimeRemaining
                     }
                 })
-            }
-            .navigationBarTitle("Title", displayMode: .automatic)
-            .toolbar{
-                ToolbarItemGroup(placement: .navigationBarTrailing){
-                    Stepper("", value: $timeRemaining, in: 5...50, step: 5.0)
-                }
-            }
-            .font(.title)
         }
     }
-    //Make the Navigation Bar Title White
-    init() {
-            // this is not the same as manipulating the proxy directly
-            let appearance = UINavigationBarAppearance()
-            
-            // this overrides everything you have set up earlier.
-            appearance.configureWithTransparentBackground()
-            
-            // this only applies to big titles
-            appearance.largeTitleTextAttributes = [
-                .font : UIFont.systemFont(ofSize: 46),
-                NSAttributedString.Key.foregroundColor : UIColor.white
-            ]
-            // this only applies to small titles
-            appearance.titleTextAttributes = [
-                .font : UIFont.systemFont(ofSize: 50),
-                NSAttributedString.Key.foregroundColor : UIColor.white
-            ]
-            
-            //In the following two lines you make sure that you apply the style for good
-            UINavigationBar.appearance().scrollEdgeAppearance = appearance
-            UINavigationBar.appearance().standardAppearance = appearance
-            
-            // This property is not present on the UINavigationBarAppearance
-            // object for some reason and you have to leave it til the end
-            UINavigationBar.appearance().tintColor = .white
-            
-        }
 }
 
 
